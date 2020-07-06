@@ -4,8 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './app.js';
 
-function Main(props) {
-  return <App />;
+class Main extends React.Component {
+  render() {
+    return <App />;
+  }
 }
 
 const rootElement = document.getElementById('root');
