@@ -6,7 +6,7 @@
 
 #### Links
 
-[PR](https://github.com/yaljamal-401-advanced-javascript/todo/pull/1)
+[PR](https://github.com/yaljamal-401-advanced-javascript/todo/pull/2)
 
 #### Modules
 
@@ -37,3 +37,5 @@ Lint test: npm run lint
 #### UML
 
 ![todo](./todo.png)
+![hooks](./hooks.png)
+
