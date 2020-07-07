@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-const todoAPI = 'http://api-testtt.herokuapp.com/api/v1/todo';
+const todoAPI = 'https://api-testtt.herokuapp.com/api/v1/todo';
 
 const useAjax = () => {
   const [list, setList] = useState([]);
@@ -58,7 +58,7 @@ const useAjax = () => {
         headers: { 'Content-Type': 'application/json' },
       })
         .then(() => {
-          setList(list.filter(listItem => listItem._id != item._id));
+          setList(list.filter(listItem => listItem._id !== item._id));
         })
         .catch(console.error);
     }
