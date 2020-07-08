@@ -4,7 +4,7 @@ const useForm = (cb) => {
   const [item, setItem] = useState({});
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    
     cb(item);
   };
   const handleInputChange = (event) => {

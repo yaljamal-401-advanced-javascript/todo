@@ -21,14 +21,32 @@ body, html {
     }
 
 }
-
+.navSec{
+    width: 90%;
+    margin: 2% auto;
+    color: white;
+}
 .todo {
 
     display:flex;
     flex-direction:row;
-    justify-content: flex-start;
-    margin: 2em;
+    justify-content: space-around;
+    margin: auto;
+    width: 80%;
 
+    .form{
+        width: 45%;
+        form{
+            width: 65%;
+            margin: auto 0%;
+            button{
+                width: 40%;
+            }
+        }
+    }
+    .list{
+        width: 45%;
+    }
     form {
 
         display:flex;
@@ -94,4 +112,10 @@ body, html {
         }
     }
 
+}
+.page{
+    margin: 3.5% auto;
+}
+.hideShow{
+    margin-bottom: 3%;
 }
