@@ -26,6 +26,7 @@
     "superagent": "^5.3.1",
     "uuid": "8.1.0"
   },
+  "homepage": "/",
   "devDependencies": {},
   "scripts": {
     "deploy": "gh-pages -d build",
