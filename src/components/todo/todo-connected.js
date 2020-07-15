@@ -1,76 +1,134 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import useAjax from '../hooks/useAjax';
-import './todo.scss';
 import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Pagination from './pagination.js';
-import ToggleHideShow from './togglehideshow';
-import PaginationContext from '../context/pagination-context';
-import ToggleShowProvider from '../context/hideShow';
-import ChangeNumberOfPages from './itemperpage';
-import Header from '../header/header.js';
-// import SortItem from './sortItems'
+import Button from 'react-bootstrap/Button';
+import Login from '../../login/index.js';
+import Signup from '../../signup/index.js';
+import Auth from '../../auth/index.js';
+import './todo.scss';
+import useAjax from '../../hooks/ajax.js';
 
-const ToDo = () => {
-  const [list, _addItem, _toggleComplete, _getTodoItems, deleteItem] = useAjax();
+// import React, { useContext } from 'react';
+import { SettingsContext } from '../../context/data.js';
+// import { ThemeContext } from '../../context/theme.js';
 
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [itemPerPage, setItemPerPage] = useState(3);
+function ToDo(props) {
+  // var slicedList;
+  const siteContext = useContext(SettingsContext);
+  // const themeContext = useContext(ThemeContext);
 
-  // const indexOfLastItem = currentPage * itemPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemPerPage;
-  // const currentItem = list.slice(indexOfFirstItem, indexOfLastItem);
+  const [list, setList] = useState([]);
+  const [getElement, postElement, putElement, deleteElement] = useAjax(setList);
 
-  // // Change page
-  // const paginate = pageNumber => setCurrentPage(pageNumber);
-  // console.log(list ,'llllllllllll');
+  const addItem = (item) => {
+    item.complete = false;
+    let url = `https://lab32-401.herokuapp.com/todo`;
+    postElement(url, item);
+  };
 
-  useEffect(_getTodoItems, []);
+  const toggleComplete = (id) => {
+    let item = list.filter((i) => i._id === id)[0] || {};
+
+    if (item._id) {
+      item.complete = !item.complete;
+      let z = list.map((listItem) =>
+        listItem._id === item._id ? item : listItem
+      );
+      setList([...z]);
+      let data = item;
+      let url = `https://lab32-401.herokuapp.com/todo`;
+
+      putElement(url, data);
+    }
+  };
+
+  useEffect(() => {
+    document.title = `TO DO LIST ${
+      list.filter((item) => !item.complete).length
+      }`;
+  }, [list]);
+  useEffect(() => {
+    let url = `https://lab32-401.herokuapp.com/todo`;
+    getElement(url);
+
+    // setTimeout(() => {
+
+    //   ss();
+    // }, 5000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list]);
+
+  const togglehandleDelete = (id) => {
+    let idx = list.findIndex((i) => i._id === id);
+    list.splice(idx, 1);
+    setList([...list]);
+    let url = `https://lab32-401.herokuapp.com/todo`;
+
+    deleteElement(url, id);
+  };
 
   return (
-    <>
-      <Header />
-      <Navbar bg="dark" variant="dark" className="navSec">
+    <main>
+      <Login />
+      <Signup />
+      <Auth capability="read">
+        <header>
+          <Navbar bg="primary" variant="dark">
+            <Navbar.Brand>HOME</Navbar.Brand>
+          </Navbar>
+        </header>
+        <Navbar variant="dark" bg="dark" className="mt-4 ml-5 mr-5">
+          <Navbar.Brand>
+            There are {list.filter((item) => !item.complete).length} Items To
+            Complete
+          </Navbar.Brand>
+        </Navbar>
 
-        <Nav className="mr-auto" >
-          <h2>
-            To Do List Manager ({list.filter(item => item.complete === 'pending').length})
-          </h2>
-        </Nav>
-
-      </Navbar>
-
-
-
-      <section className="todo">
-
-        <div className="form">
-          <TodoForm handleSubmit={_addItem} />
+        <div style={{ textAlign: 'end' }}>
+          <Button
+            style={{}}
+            variant="primary"
+            onClick={(e) => siteContext.setShow(!siteContext.show)}
+          >
+            Hide Completed
+          </Button>
+          <form onChange={(e) => siteContext.changeSort(e.target.value)}>
+            <label className="radio">
+              <input type="radio" name="sort" value="difficulty" />
+              difficulty
+            </label>
+            <label className="radio">
+              <input type="radio" name="sort" value="complete" />
+              complete
+            </label>
+            <label className="radio">
+              <input type="radio" name="sort" value="assignee" />
+              assignee
+            </label>
+            <label className="radio">
+              <input type="radio" name="sort" value="none" />
+              none
+            </label>
+          </form>
         </div>
-        <PaginationContext list={list}>
+        <section className="todo">
+          <Auth capability="create">
+            <div>
+              <TodoForm handleSubmit={addItem} />
+            </div>
+          </Auth>
 
-          <div className="list">
-            <ToggleShowProvider list={list}>
-              <ToggleHideShow />
-              <ChangeNumberOfPages />
-
-              <TodoList
-                handleComplete={_toggleComplete}
-                handleDelete={deleteItem}
-              />
-            </ToggleShowProvider>
-            <Pagination
-              totalitems={list.length}
+          <div>
+            <TodoList
+              list={list}
+              handleComplete={toggleComplete}
+              handleDelete={togglehandleDelete}
             />
           </div>
-
-        </PaginationContext>
-
-      </section>
-    </>
+        </section>
+      </Auth>
+    </main>
   );
-};
-
+}
 export default ToDo;
